@@ -1,0 +1,17 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Environment Steup",
+            "type": "shell",
+            "command": "bash",
+            "args": [
+                "-c",
+                "sh .scripts/env-setup.bash"
+            ],
+            "problemMatcher": [],
+            "dependsOn": "Get Environment Ready",
+            "group": "build"
+        }
+    ]
+}

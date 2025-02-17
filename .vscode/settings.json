@@ -1,0 +1,9 @@
+{
+    "python.pythonPath": ".venv/bin/python",  // Path to the virtual environment
+    "python.envFile": "${workspaceFolder}/.env",  // Path to .env file
+    "editor.formatOnSave": true,
+    "files.exclude": {
+        "**/__pycache__": true,
+        "**/*.pyc": true
+    }
+}
