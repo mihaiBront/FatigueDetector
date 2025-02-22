@@ -1,2 +1,6 @@
 Flask
 python-dotenv
+bleak
+asyncio
+obd
+coloredlogs
