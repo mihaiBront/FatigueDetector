@@ -3,7 +3,8 @@ class FaceDisplay {
     this.container = document.getElementById(containerId);
     this.render();
     this.initializeElements();
-    this.startWorryCycle();
+    // this.startWorryCycle();
+    this.setWorried(true);
   }
 
   render() {
@@ -56,6 +57,7 @@ class FaceDisplay {
 
     // State
     this.isWorried = false;
+    this.isDead = true;
     this.data = {
       time: "00:00:00",
       distance: "0.0",
@@ -74,6 +76,24 @@ class FaceDisplay {
       this.mouth.classList.remove("worried");
       this.body.classList.remove("worried");
     }
+  }
+
+  setDead(isDead) {
+    this.isDead = isDead;
+    if (isDead) {
+      this.eyes.classList.add("dead");
+      this.mouth.classList.add("dead");
+      this.body.classList.add("dead");
+    } else {
+      this.eyes.classList.remove("dead");
+      this.mouth.classList.remove("dead");
+      this.body.classList.remove("dead");
+    }
+  }
+
+  setNomral() {
+    this.setWorried(false);
+    this.setDead(false);
   }
 
   updateData(newData) {

@@ -1,8 +1,4 @@
 {
-    // See https://go.microsoft.com/fwlink/?linkid=830387 for 
-    // more information about the launch.json format
-    // Or https://code.visualstudio.com/docs/python/tutorial-flask
-    // for more information about debugging flask in VSCode
     "version": "0.2.0",
     "configurations": [
         {
@@ -11,14 +7,41 @@
             "request": "launch",
             "module": "flask",
             "env": {
-                "FLASK_APP": "app.py",
+                "FLASK_APP": "./app.py",
+                "FLASK_ENV": "development",
                 "FLASK_DEBUG": "1"
             },
             "args": [
                 "run",
+                "-p",
+                "3950"
             ],
             "jinja": true,
             "justMyCode": true
+        },
+        {
+            "name": "Edge Debug",
+            "type": "pwa-msedge",
+            "request": "launch",
+            "url": "http://localhost:3950",
+            "webRoot": "${workspaceFolder}",
+            "sourceMaps": true,
+            "smartStep": true,
+            "breakOnLoad": true,
+            "runtimeArgs": [
+                "--remote-debugging-port=9222",
+                "--auto-open-devtools-for-tabs"
+            ],
+            "restart": true
+        }
+    ],
+    "compounds": [
+        {
+            "name": "Debug Flask and JS with Edge",
+            "configurations": [
+                "Flask Debug",
+                "Edge Debug"
+            ]
         }
     ]
 }
