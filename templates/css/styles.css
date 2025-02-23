@@ -1,0 +1,228 @@
+body {
+  background-color: black;
+  transition: background-color 0.3s;
+}
+
+/* Add worried background flash animation */
+body.worried {
+  animation: flashBackground 1.5s infinite;
+}
+
+@keyframes flashBackground {
+  0%,
+  100% {
+    background-color: black;
+  }
+  50% {
+    background-color: rgb(151, 40, 0);
+  }
+}
+
+/* Add container for face and data */
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 50px;
+  margin: 50px auto;
+  max-width: 800px;
+}
+
+.face {
+  width: 200px;
+  height: 200px;
+  border: 10px solid white;
+  border-radius: 10px;
+  position: relative;
+  margin: 0;
+}
+
+.eyes {
+  position: absolute;
+  top: 30%;
+  width: 100%;
+  animation: lookAround 4s infinite;
+}
+
+.eye {
+  width: 20px;
+  height: 30px;
+  background: white;
+  border-radius: 2px;
+  position: absolute;
+}
+
+.eye.left {
+  left: 25%;
+}
+
+.eye.right {
+  right: 25%;
+}
+
+/* Add eyebrows */
+.eyebrow {
+  width: 30px;
+  height: 8px;
+  background: white;
+  position: absolute;
+  top: -15px;
+  border-radius: 4px;
+  transition: transform 0.3s;
+}
+
+.eye.left .eyebrow {
+  left: -5px;
+  transform: rotate(0deg);
+  animation: happyBrow 2s infinite;
+}
+
+.eye.right .eyebrow {
+  right: -5px;
+  transform: rotate(0deg);
+  animation: happyBrow 2s infinite;
+}
+
+@keyframes happyBrow {
+  0%,
+  40%,
+  100% {
+    transform: translateY(0);
+  }
+  55% {
+    transform: translateY(-5px);
+  }
+  85% {
+    transform: translateY(0);
+  }
+}
+
+/* Worried eyebrows - stop happy animation and rotate */
+.eyes.worried .eye.left .eyebrow {
+  animation: none;
+  transform: rotate(-30deg) translateX(-8px);
+}
+
+.eyes.worried .eye.right .eyebrow {
+  animation: none;
+  transform: rotate(30deg) translateX(8px);
+}
+
+.mouth {
+  width: 100px;
+  height: 10px;
+  border: 10px solid white;
+  border-radius: 4px;
+  border-top: 0;
+  position: absolute;
+  bottom: 25%;
+  left: 50%;
+  transform: translateX(-50%);
+  animation: smile 3s infinite;
+}
+
+/* Add worried mouth style */
+.mouth.worried {
+  border: none;
+  bottom: 20%;
+  height: 30px;
+  width: 140px;
+  transform: translateX(-50%);
+  animation: none;
+}
+
+.mouth.worried::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='30' fill='none'%3E%3Cpath d='M0,15 Q14,5 28,15 Q42,25 56,15 Q70,5 84,15 Q98,25 112,15 Q126,5 140,15' stroke='white' stroke-width='10' stroke-linecap='round'/%3E%3C/svg%3E");
+  animation: worried-mouth 1s infinite;
+}
+
+.eyes.worried {
+  animation: worriedEyes 4s infinite;
+}
+
+@keyframes lookAround {
+  0%,
+  40%,
+  100% {
+    transform: translateX(0);
+  }
+  55% {
+    transform: translateX(-5px);
+  }
+  85% {
+    transform: translateX(5px);
+  }
+}
+
+@keyframes smile {
+  0%,
+  40%,
+  100% {
+    height: 15px;
+  }
+  55% {
+    height: 20px;
+  }
+  85% {
+    height: 15px;
+  }
+}
+
+@keyframes worriedEyes {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(5px);
+  }
+}
+
+@keyframes worried-mouth {
+  0%,
+  100% {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='30' fill='none'%3E%3Cpath d='M0,15 Q14,5 28,15 Q42,25 56,15 Q70,5 84,15 Q98,25 112,15 Q126,5 140,15' stroke='white' stroke-width='10' stroke-linecap='round'/%3E%3C/svg%3E");
+  }
+  50% {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='30' fill='none'%3E%3Cpath d='M0,15 Q14,25 28,15 Q42,5 56,15 Q70,25 84,15 Q98,5 112,15 Q126,25 140,15' stroke='white' stroke-width='10' stroke-linecap='round'/%3E%3C/svg%3E");
+  }
+}
+
+/* Add data panel styles */
+.data-panel {
+  color: white;
+  font-family: Arial, sans-serif;
+  min-width: 200px;
+}
+
+.data-item {
+  margin-bottom: 20px;
+}
+
+.data-label {
+  font-size: 14px;
+  color: #888;
+  margin-bottom: 5px;
+}
+
+.data-value {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.fatigue-signs {
+  list-style: none;
+  padding: 0;
+  margin: 5px 0 0 0;
+}
+
+.fatigue-signs li {
+  font-size: 16px;
+  margin-bottom: 5px;
+}

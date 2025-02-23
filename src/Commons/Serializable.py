@@ -1,7 +1,7 @@
 from typing import Any, Optional
 import json
 import logging as log
-from dataclasses import field
+from dataclasses import field, fields
 import os
 
 from src.Commons.FileManagement import FileManagement
@@ -14,6 +14,9 @@ class Serializable(FileManagement):
     config dialog (most of the abstract methods comming empty)
     """
     _outer: Any = field(default=None)
+    
+    def __str__(self):
+        return self.serialize() 
 
     def exclude_private(self) -> dict:
         """
@@ -38,9 +41,17 @@ class Serializable(FileManagement):
         Returns:
             object: Object of current class with info from json string
         """
-        log.warning("This class does not implement this method")
-        return None
-
+        
+        field_types = {f.name: f.type for f in fields(cls)}
+        kwargs = {}
+        for field_name, field_type in field_types.items():
+            value = self.get(field_name)
+            if value is not None:
+                kwargs[field_name] = field_type(value)
+            else:
+                kwargs[field_name] = field_type()
+        return cls(**kwargs)
+        
     @classmethod
     def deserialize(cls, json_string: str) -> object:
         """

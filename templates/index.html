@@ -1,53 +1,13 @@
 <!DOCTYPE html>
-<html>
-
-<body>
-    <h1>My First Heading</h1>
-    <p>My first paragraph.</p>
-
-    <input type="text" id="inputText" placeholder="Enter some text" />
-
-    <!-- Button to trigger API call -->
-    <button id="apiButton">Call API</button>
-
-    <!-- Section to display the API response -->
-    <div id="apiResponse" style="margin-top: 20px;"></div>
-
-    <script>
-        // Add event listener for the button click
-        document.getElementById('apiButton').addEventListener('click', async () => {
-            // Get the value from the input box
-            const userInput = document.getElementById('inputText').value;
-
-            // Example API endpoint (replace with your own API URL)
-            const apiUrl = '/getHelloWorld';
-
-            try {
-                // Make the API call with fetch
-                const response = await fetch(apiUrl, {
-                    method: 'POST', // Use GET if the API requires it
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ name: userInput }) // Adjust payload structure as needed
-                });
-
-                // Handle the response
-                if (response.ok) {
-                    const data = await response.json();
-                    document.getElementById('apiResponse').innerHTML =
-                        `<strong>Response:</strong> ${data.message}`;
-                } else {
-                    const data = await response.json();
-                    document.getElementById('apiResponse').innerHTML =
-                        `<strong>Error:</strong> ${data.error} (${response.statusText} | ${response.statusText})`;
-                }
-            } catch (error) {
-                document.getElementById('apiResponse').innerHTML =
-                    `<strong>Error:</strong> ${error.message}`;
-            }
-        });
-    </script>
-</body>
-
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Face Animation</title>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <div id="app-container"></div>
+    <script src="js/face-display.js"></script>
+  </body>
 </html>

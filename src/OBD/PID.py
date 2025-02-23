@@ -8,6 +8,6 @@ class PID(Serializable):
     DataLen:int = field(default_factory=int)
     Desc: str = field(default_factory=str)
     
-    @classmethod
-    def from_dict(cls, self: Any):
-        pass
+@dataclass
+class PIDList(Serializable):
+    PIDs: list[PID] = field(default_factory=list[PID])
