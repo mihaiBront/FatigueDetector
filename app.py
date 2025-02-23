@@ -1,5 +1,4 @@
-from flask import Flask, render_template, jsonify, request, send_from_directory
-import os
+from flask import Flask, render_template, send_from_directory
 
 app = Flask(__name__, 
     static_folder='static',  # explicitly set static folder
@@ -15,4 +14,4 @@ def favicon():
     return send_from_directory('static', 'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 if __name__ == '__main__':
-    app.run(debug=True)  # added debug mode for development
+    app.run()  # added debug mode for development
