@@ -4,3 +4,4 @@ bleak
 asyncio
 obd
 coloredlogs
+jsonify

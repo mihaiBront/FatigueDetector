@@ -1,25 +1,18 @@
-from flask import Flask, render_template, jsonify, request
-import src.server_file_sample as srvSample
+from flask import Flask, render_template, jsonify, request, send_from_directory
+import os
 
-app = Flask(__name__)
+app = Flask(__name__, 
+    static_folder='static',  # explicitly set static folder
+    template_folder='templates'  # explicitly set template folder
+)
 
 @app.route('/')
 def index():
     return render_template('index.html')
 
-@app.route('/getHelloWorld', methods=['POST'])
-def getHelloWorld():
-    try:
-        data = request.get_json()
-        name = data.get('name', '')
-
-        if len(name) == 0:
-            raise Exception("No name provided")
-
-        return jsonify(message=srvSample.makeStringForGreeting(name)), 200
-    
-    except Exception as ex:
-        return jsonify(error=f"{ex} :´("), 500
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory('static', 'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)  # added debug mode for development

@@ -100,10 +100,3 @@ class FaceDisplay {
 
 // Initialize the display
 const faceDisplay = new FaceDisplay("app-container");
-
-// Example usage:
-// faceDisplay.updateData({
-//   time: '02:45:30',
-//   distance: '187.5',
-//   fatigueSigns: ['Frequent Blinking', 'Head Nodding', 'Lane Deviation']
-// })
