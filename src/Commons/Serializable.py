@@ -14,9 +14,6 @@ class Serializable(FileManagement):
     config dialog (most of the abstract methods comming empty)
     """
     _outer: Any = field(default=None)
-    
-    def __str__(self):
-        return self.serialize() 
 
     def exclude_private(self) -> dict:
         """
@@ -47,7 +44,10 @@ class Serializable(FileManagement):
         for field_name, field_type in field_types.items():
             value = self.get(field_name)
             if value is not None:
-                kwargs[field_name] = field_type(value)
+                if type(value) is dict:
+                    kwargs[field_name] = field_type.from_dict(value)
+                else:
+                    kwargs[field_name] = field_type(value)
             else:
                 kwargs[field_name] = field_type()
         return cls(**kwargs)
@@ -112,6 +112,39 @@ class Serializable(FileManagement):
         log.info("Deserialized object correctly")
         return json_obj
 
+    @classmethod
+    def to_recursive_list(cls):
+        field_types = {f.name: f.type for f in fields(cls)}
+        kwargs = {}
+        
+        md_lst = []
+        
+        for item_name, item_type in field_types.items():
+            if item_name[0] != "_":
+                item_type_full = str(item_type)
+                item_type_name = item_type.__name__
+                
+                md_lst.append(f"- `({item_type_name}) {item_name}`: >> Description")
+                
+                if "." in item_type_full[1:-1]:
+                    inners = item_type.to_recursive_list()
+                    for inner in inners:
+                        md_lst.append(f"\t{inner}")
+        
+        return md_lst
+    
+    @classmethod
+    def to_documentation_template(cls, out_path: str):
+        md_txt = DOCUMENTATION_TEMPLATE.replace("[CLASS_NAME]", cls.__name__)
+        md_txt = md_txt.replace("[FIELDS]", "\n".join(cls.to_recursive_list()))
+        md_txt = md_txt.replace("[DEFAULT_JSON]", cls().serialize())
+        
+        with open(out_path, "w") as file:
+            file.write(md_txt)
+            file.close()
+            
+        return
+    
     def to_file(self, file_path: str):
         """
         Saves an object onto a specified file

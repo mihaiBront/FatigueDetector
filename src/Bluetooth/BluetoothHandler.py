@@ -56,6 +56,7 @@ class BluetoothHandler():
             logging.error(f"Error connecting to device: {str(e)}")
             return None
     
+    @staticmethod
     async def exploreServices(client):
         """
         Explore and interact with device services and characteristics
