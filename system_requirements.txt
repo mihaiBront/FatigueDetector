@@ -1,0 +1,9 @@
+python3.11
+python3.11-dev
+python3.11-venv
+bluetooth
+libbluetooth-dev
+pkg-config
+libboost-python-dev
+libboost-thread-dev
+build-essential 

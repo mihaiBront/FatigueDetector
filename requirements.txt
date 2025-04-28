@@ -5,3 +5,6 @@ asyncio
 obd
 coloredlogs
 jsonify
+asgiref
+hypercorn
+git+https://github.com/pybluez/pybluez.git
