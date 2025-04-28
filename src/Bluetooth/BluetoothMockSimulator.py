@@ -2,6 +2,7 @@ import asyncio
 import logging as log
 from typing import Optional
 import random
+import time
 from src.OBD.OBDDataStructure import OBDDataStructure
 from src.Bluetooth.iBluetoothOBDClient import iBluetoothOBDClient
 
@@ -14,41 +15,39 @@ class BluetoothMockSimulator(iBluetoothOBDClient):
         super().__init__()
         self.connected = False
         self.initialized = False
-        # Simulated values that will change over time
-        self.mock_rpm = 1000
-        self.mock_speed = 0
-        self.mock_runtime = 0
-        # Start the background task to update mock values
-        asyncio.create_task(self._update_mock_values())
+        self.start_time = time.time()
+        # Base values for simulation
+        self.base_rpm = 1000
+        self.base_speed = 0
 
-    async def _update_mock_values(self):
-        """Background task to simulate changing vehicle values."""
-        while True:
-            if self.connected and self.initialized:
-                # Simulate RPM changes (idle ~ 1000, max ~ 6000)
-                self.mock_rpm = max(800, min(6000, 
-                    self.mock_rpm + random.randint(-200, 200)))
-                
-                # Simulate speed changes (0-120 km/h)
-                self.mock_speed = max(0, min(120, 
-                    self.mock_speed + random.randint(-5, 5)))
-                
-                # Increment runtime
-                self.mock_runtime += 1
-            
-            await asyncio.sleep(1)  # Update every second
+    def _get_mock_values(self):
+        """Generate dynamic mock values based on time and randomization."""
+        # Time-based runtime
+        runtime = int(time.time() - self.start_time)
+        
+        # RPM varies between 800 and 6000
+        rpm = max(800, min(6000, 
+            self.base_rpm + random.randint(-500, 500)))
+        self.base_rpm = rpm  # Save for next time
+        
+        # Speed varies between 0 and 120 km/h
+        speed = max(0, min(120, 
+            self.base_speed + random.randint(-10, 10)))
+        self.base_speed = speed  # Save for next time
+        
+        return rpm, speed, runtime
 
     async def find_device(self) -> bool:
         """Simulate device discovery."""
         log.info("Mock: Searching for device...")
-        await asyncio.sleep(2)  # Simulate search delay
+        await asyncio.sleep(0.5)  # Reduced delay
         log.info("Mock: Device found")
         return True
 
     async def connect(self) -> bool:
         """Simulate connection establishment."""
         log.info("Mock: Connecting to device...")
-        await asyncio.sleep(1)  # Simulate connection delay
+        await asyncio.sleep(0.2)  # Reduced delay
         self.connected = True
         log.info("Mock: Connected successfully")
         return True
@@ -60,8 +59,9 @@ class BluetoothMockSimulator(iBluetoothOBDClient):
             return False
         
         log.info("Mock: Initializing communication...")
-        await asyncio.sleep(0.5)  # Simulate initialization delay
+        await asyncio.sleep(0.2)  # Reduced delay
         self.initialized = True
+        self.start_time = time.time()  # Reset start time
         log.info("Mock: Communication initialized")
         return True
 
@@ -75,13 +75,17 @@ class BluetoothMockSimulator(iBluetoothOBDClient):
         
         # Simulate responses based on command
         if command == "010C":  # RPM
-            return f"41 0C {self.mock_rpm // 4:04X}"
+            rpm, _, _ = self._get_mock_values()
+            return f"41 0C {rpm // 4:04X}"
         elif command == "010D":  # Speed
-            return f"41 0D {self.mock_speed:02X}"
+            _, speed, _ = self._get_mock_values()
+            return f"41 0D {speed:02X}"
         elif command == "011F":  # Runtime
-            return f"41 1F {self.mock_runtime:04X}"
+            _, _, runtime = self._get_mock_values()
+            return f"41 1F {runtime:04X}"
         elif command == "ATALL":  # All settings
-            return f"RPM:{self.mock_rpm},SPEED:{self.mock_speed},RUNTIME:{self.mock_runtime}"
+            rpm, speed, runtime = self._get_mock_values()
+            return f"RPM:{rpm},SPEED:{speed},RUNTIME:{runtime}"
         
         return None
 
@@ -89,31 +93,35 @@ class BluetoothMockSimulator(iBluetoothOBDClient):
         """Get simulated RPM."""
         if not self.connected or not self.initialized:
             return None
-        log.info(f"Mock: RPM = {self.mock_rpm}")
-        return self.mock_rpm
+        rpm, _, _ = self._get_mock_values()
+        log.info(f"Mock: RPM = {rpm}")
+        return rpm
 
     async def request_vehicle_speed(self) -> Optional[int]:
         """Get simulated speed."""
         if not self.connected or not self.initialized:
             return None
-        log.info(f"Mock: Speed = {self.mock_speed} km/h")
-        return self.mock_speed
+        _, speed, _ = self._get_mock_values()
+        log.info(f"Mock: Speed = {speed} km/h")
+        return speed
 
     async def request_engine_run_time(self) -> Optional[int]:
         """Get simulated runtime."""
         if not self.connected or not self.initialized:
             return None
-        log.info(f"Mock: Runtime = {self.mock_runtime} seconds")
-        return self.mock_runtime
+        _, _, runtime = self._get_mock_values()
+        log.info(f"Mock: Runtime = {runtime} seconds")
+        return runtime
 
     async def request_all_settings(self) -> Optional[OBDDataStructure]:
         """Get all simulated settings at once."""
         if not self.connected or not self.initialized:
             return None
             
-        log.info(f"Mock: All settings - RPM: {self.mock_rpm}, "
-                f"Speed: {self.mock_speed}(km/h), Runtime: {self.mock_runtime}(s)")
-        return OBDDataStructure(self.mock_rpm, self.mock_speed, self.mock_runtime)
+        rpm, speed, runtime = self._get_mock_values()
+        log.info(f"Mock: All settings - RPM: {rpm}, "
+                f"Speed: {speed}(km/h), Runtime: {runtime}(s)")
+        return OBDDataStructure(rpm, speed, runtime)
 
     async def close(self) -> None:
         """Simulate closing the connection."""
