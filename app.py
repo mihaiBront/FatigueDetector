@@ -7,7 +7,7 @@ from src.Bluetooth.BluetoothSimulatorESP32 import BluetoothSimulatorESP32
 
 import argparse
 
-client = None
+obd_client = None
 
 # Parse arguments
 parser = argparse.ArgumentParser(description='OBD-II Simulator')
@@ -21,7 +21,7 @@ app = Flask(__name__,
     template_folder='templates'  # explicitly set template folder
 )
 
-client = None
+obd_client = None
 
 @app.route('/')
 def index():
@@ -33,37 +33,44 @@ def favicon():
 
 @app.route('/api/obd/data')
 async def obd_data():
-    global client
-    if client == None:
+    global obd_client
+    if obd_client == None:
         return jsonify({'error': 'Client not initialized'}), 500
     
-    data = await client.request_all_settings()
-    return jsonify(data.to_dict())
+    data = await obd_client.request_all_settings()
+    ret_dict = data.to_dict()
+    
+    # CAMERA IS_TIRED DATA RETRIEVAL AND ADDITION TO DICT
+    ret_dict['is_tired'] = False # TODO: Implement camera client
+    
+    return jsonify(ret_dict)
 
 async def main():
-    global client
-    if client == None:
+    global obd_client
+    if obd_client == None:
         log.info(f"Starting server in {args.simulation} mode on port {args.port}")
         if args.simulation == 'mock':
-            client = BluetoothMockSimulator()
+            obd_client = BluetoothMockSimulator()
         elif args.simulation == 'esp32':
-            client = BluetoothSimulatorESP32()
+            obd_client = BluetoothSimulatorESP32()
             
-        if not client:
+        if not obd_client:
             log.error("Failed to create client")
             exit(1)
         
-        if not await client.find_device():
+        if not await obd_client.find_device():
             log.error("Failed to find device")
             exit(1)
         
-        if not await client.connect():
+        if not await obd_client.connect():
             log.error("Failed to connect to device")
             exit(1)
         
-        if not await client.init_communication():
+        if not await obd_client.init_communication():
             log.error("Failed to initialize communication")
             exit(1)
+            
+    # CAMERA CLIENT INITIALIZATION
     
     app.run(port=args.port, debug=False)
 
