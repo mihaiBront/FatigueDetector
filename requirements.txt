@@ -1,4 +1,4 @@
-Flask
+Flask[async]
 python-dotenv
 bleak
 asyncio

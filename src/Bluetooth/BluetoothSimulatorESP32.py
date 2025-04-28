@@ -1,13 +1,13 @@
 import bluetooth
 import asyncio
-import sys
 from bluetooth import *
 import logging as log
-from typing import Optional
+from typing import Optional, Dict
 import time
+from src.OBD.OBDDataStructure import OBDDataStructure
+from src.Bluetooth.iBluetoothOBDClient import iBluetoothOBDClient
 
 log.basicConfig(level=log.INFO)
-from src.Bluetooth.iBluetoothOBDClient import iBluetoothOBDClient
 
 class BluetoothSimulatorESP32(iBluetoothOBDClient):
     def __init__(self):
@@ -71,7 +71,7 @@ class BluetoothSimulatorESP32(iBluetoothOBDClient):
             log.error(f"Error initializing communication: {e}")
             return False
 
-    async def send_command(self, command: str) -> str | None:
+    async def send_command(self, command: str) -> Optional[str]:
         if not self.sock:
             log.error("Not connected to device")
             return None
@@ -108,7 +108,7 @@ class BluetoothSimulatorESP32(iBluetoothOBDClient):
             log.error(f"Error sending command '{command}': {e}")
             return None
             
-    async def request_engine_rpm(self) -> int | None:
+    async def request_engine_rpm(self) -> Optional[int]:
         response = await self.send_command("010C")
         if response and response.startswith("41 0C"):
             try:
@@ -123,7 +123,7 @@ class BluetoothSimulatorESP32(iBluetoothOBDClient):
         log.error("Failed to get RPM data")
         return None
     
-    async def request_vehicle_speed(self) -> int | None:
+    async def request_vehicle_speed(self) -> Optional[int]:
         response = await self.send_command("010D")
         if response and response.startswith("41 0D"):
             try:
@@ -136,7 +136,7 @@ class BluetoothSimulatorESP32(iBluetoothOBDClient):
         log.error("Failed to get speed data")
         return None
     
-    async def request_engine_run_time(self) -> int | None:
+    async def request_engine_run_time(self) -> Optional[int]:
         response = await self.send_command("011F")
         if response and response.startswith("41 1F"):
             try:
@@ -153,6 +153,31 @@ class BluetoothSimulatorESP32(iBluetoothOBDClient):
         log.error("Failed to get engine run time data")
         return None
 
+    async def request_all_settings(self) -> Optional[OBDDataStructure]:
+        """Request all vehicle settings at once using the ATALL command."""
+        response = await self.send_command("ATALL")
+        if not response:
+            log.error("Failed to get all settings")
+            return None
+
+        try:
+            # The response format should match your C++ implementation
+            # Assuming it returns a comma-separated string of values
+            values = response.split(',')
+            if len(values) >= 3:
+                rpm = int(values[0].split(":")[1]) if values[0] else None
+                speed = int(values[1].split(":")[1]) if values[1] else None
+                runtime = int(values[2].split(":")[1]) if values[2] else None
+
+                log.info(f"All settings - RPM: {rpm}, Speed: {speed}(km/h), Runtime: {runtime}(s)")
+                
+                return OBDDataStructure(rpm, speed, runtime)
+                
+        except (ValueError, IndexError) as e:
+            log.error(f"Error parsing all settings data: {e}")
+        
+        return None
+
     async def close(self) -> None:
         if self.sock:
             try:
@@ -167,9 +192,14 @@ if __name__ == "__main__":
         try:
             if await client.connect():
                 if await client.init_communication():
-                    await client.request_engine_rpm()
-                    await client.request_vehicle_speed()
-                    await client.request_engine_run_time()
+                    # Test individual requests
+                    # await client.request_engine_rpm()
+                    # await client.request_vehicle_speed()
+                    # await client.request_engine_run_time()
+                    
+                    # Test getting all settings at once
+                    all_settings = await client.request_all_settings()
+                    print("All settings:", all_settings)
         finally:
             await client.close()
 
