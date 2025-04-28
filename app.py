@@ -11,7 +11,7 @@ obd_client = None
 
 # Parse arguments
 parser = argparse.ArgumentParser(description='OBD-II Simulator')
-parser.add_argument('--simulation', choices=['mock', 'esp32'], default='mock', help='Select the OBD-II simulation type (mock or esp32)')
+parser.add_argument('--obd', choices=['mock', 'esp32'], default='mock', help='Select the OBD-II type (mock or esp32)')
 parser.add_argument('--port', type=int, default=5000, help='Port to run the server on')
 parser.add_argument('--debug', action='store_true', help='Enable debug mode')
 args = parser.parse_args()
@@ -48,10 +48,10 @@ async def obd_data():
 async def main():
     global obd_client
     if obd_client == None:
-        log.info(f"Starting server in {args.simulation} mode on port {args.port}")
-        if args.simulation == 'mock':
+        log.info(f"Starting server in {args.obd} mode on port {args.port}")
+        if args.obd == 'mock':
             obd_client = BluetoothMockSimulator()
-        elif args.simulation == 'esp32':
+        elif args.obd == 'esp32':
             obd_client = BluetoothSimulatorESP32()
             
         if not obd_client:
