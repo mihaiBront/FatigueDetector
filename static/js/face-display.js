@@ -1,122 +1,76 @@
 class FaceDisplay {
   constructor(containerId) {
     this.container = document.getElementById(containerId);
+    if (!this.container) {
+      throw new Error(`Container with id '${containerId}' not found`);
+    }
     this.render();
     this.initializeElements();
-    // this.startWorryCycle();
-    this.setWorried(true);
   }
 
   render() {
     this.container.innerHTML = `
-      <div class="container">
-        <div class="face">
-          <div class="eyes">
-            <div class="eye left">
-              <div class="eyebrow"></div>
-            </div>
-            <div class="eye right">
-              <div class="eyebrow"></div>
-            </div>
+      <div class="face">
+        <div class="eyes">
+          <div class="eye left">
+            <div class="eyebrow"></div>
           </div>
-          <div class="mouth"></div>
-        </div>
-
-        <div class="data-panel">
-          <div class="data-item">
-            <div class="data-label">Time Traveled</div>
-            <div class="data-value" data-id="time">00:00:00</div>
-          </div>
-
-          <div class="data-item">
-            <div class="data-label">Distance Traveled</div>
-            <div class="data-value" data-id="distance">0.0 km</div>
-          </div>
-
-          <div class="data-item">
-            <div class="data-label">Signs of Fatigue</div>
-            <ul class="fatigue-signs" data-id="fatigue-list">
-              <li>No signs detected</li>
-            </ul>
+          <div class="eye right">
+            <div class="eyebrow"></div>
           </div>
         </div>
+        <div class="mouth"></div>
       </div>
     `;
   }
 
   initializeElements() {
-    // DOM elements
-    this.eyes = this.container.querySelector(".eyes");
-    this.mouth = this.container.querySelector(".mouth");
-    this.body = document.body;
+    this.face = this.container.querySelector('.face');
+    this.eyes = this.container.querySelector('.eyes');
+    this.mouth = this.container.querySelector('.mouth');
+    this.currentState = 'normal';
+  }
 
-    // Data elements
-    this.timeValue = this.container.querySelector('[data-id="time"]');
-    this.distanceValue = this.container.querySelector('[data-id="distance"]');
-    this.fatigueList = this.container.querySelector('[data-id="fatigue-list"]');
-
-    // State
-    this.isWorried = false;
-    this.isDead = true;
-    this.data = {
-      time: "00:00:00",
-      distance: "0.0",
-      fatigueSigns: [],
-    };
+  setNormal() {
+    console.log('root:Setting normal');
+    if (this.currentState !== 'normal') {
+      console.log('root:Setting normal: removing worried and tired');
+      document.body.classList.remove('worried', 'tired');
+      this.eyes.classList.remove('worried', 'tired');
+      this.mouth.classList.remove('worried', 'tired');
+      this.currentState = 'normal';
+    }
   }
 
   setWorried(isWorried) {
-    this.isWorried = isWorried;
-    if (isWorried) {
-      this.eyes.classList.add("worried");
-      this.mouth.classList.add("worried");
-      this.body.classList.add("worried");
-    } else {
-      this.eyes.classList.remove("worried");
-      this.mouth.classList.remove("worried");
-      this.body.classList.remove("worried");
+    console.log('root:Setting worried');
+    if (isWorried && this.currentState !== 'worried') {
+      console.log('root:Setting worried: removing tired');
+      document.body.classList.remove('tired');
+      document.body.classList.add('worried');
+      this.eyes.classList.remove('tired');
+      this.eyes.classList.add('worried');
+      this.mouth.classList.remove('tired');
+      this.mouth.classList.add('worried');
+      this.currentState = 'worried';
+    } else if (!isWorried && this.currentState === 'worried') {
+      this.setNormal();
     }
   }
 
-  setDead(isDead) {
-    this.isDead = isDead;
-    if (isDead) {
-      this.eyes.classList.add("dead");
-      this.mouth.classList.add("dead");
-      this.body.classList.add("dead");
-    } else {
-      this.eyes.classList.remove("dead");
-      this.mouth.classList.remove("dead");
-      this.body.classList.remove("dead");
+  setTired(isTired) {
+    console.log('root:Setting tired');
+    if (isTired && this.currentState !== 'tired') {
+      console.log('root:Setting tired: removing worried');
+      document.body.classList.remove('worried');
+      document.body.classList.add('tired');
+      this.eyes.classList.remove('worried');
+      this.eyes.classList.add('tired');
+      this.mouth.classList.remove('worried');
+      this.mouth.classList.add('tired');
+      this.currentState = 'tired';
+    } else if (!isTired && this.currentState === 'tired') {
+      this.setNormal();
     }
-  }
-
-  setNomral() {
-    this.setWorried(false);
-    this.setDead(false);
-  }
-
-  updateData(newData) {
-    // Update internal data
-    Object.assign(this.data, newData);
-
-    // Update display
-    if (newData.time) this.timeValue.textContent = newData.time;
-    if (newData.distance)
-      this.distanceValue.textContent = `${newData.distance} km`;
-    if (newData.fatigueSigns) {
-      this.fatigueList.innerHTML = newData.fatigueSigns
-        .map((sign) => `<li>${sign}</li>`)
-        .join("");
-    }
-  }
-
-  startWorryCycle() {
-    setInterval(() => {
-      this.setWorried(!this.isWorried);
-    }, 15000);
   }
 }
-
-// Initialize the display
-const faceDisplay = new FaceDisplay("app-container");

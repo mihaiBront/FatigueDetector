@@ -1,0 +1,207 @@
+.config-container {
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 20px;
+    color: white;
+    font-family: Arial, sans-serif;
+}
+
+.config-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+}
+
+.config-header h1 {
+    margin: 0;
+    font-size: 24px;
+}
+
+.back-button {
+    color: white;
+    text-decoration: none;
+    padding: 10px 20px;
+    border: 2px solid white;
+    border-radius: 5px;
+    transition: all 0.3s;
+}
+
+.back-button:hover {
+    background: white;
+    color: black;
+}
+
+.config-form {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 30px;
+    border-radius: 10px;
+}
+
+.config-item {
+    margin-bottom: 25px;
+}
+
+.config-item label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+/* Hide default number input spinners */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+/* Input group styles */
+.input-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.input-group input,
+.input-group select {
+    flex: 1;
+    text-align: center;
+    padding: 12px;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    font-size: 18px;
+    min-width: 0;
+    /* Prevent flex item from overflowing */
+}
+
+.input-group input:focus,
+.input-group select:focus {
+    outline: none;
+    border-color: white;
+}
+
+.input-group select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='6'%3E%3Cpath d='M0 0l6 6 6-6z' fill='white'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 15px center;
+    padding-right: 40px;
+    cursor: pointer;
+}
+
+.input-group select::-ms-expand {
+    display: none;
+}
+
+.input-group select option {
+    background-color: #1a1a1a;
+    color: white;
+    padding: 12px;
+}
+
+/* Adjustment buttons */
+.adjust-btn {
+    width: 44px;
+    height: 44px;
+    padding: 0px 30px;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.adjust-btn:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.adjust-btn:active:not(:disabled) {
+    transform: scale(0.95);
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.adjust-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.adjust-btn.minus {
+    padding-bottom: 4px;
+}
+
+.config-item .description {
+    display: block;
+    font-size: 14px;
+    color: #888;
+    margin-top: 5px;
+}
+
+.config-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.save-button,
+.reset-button {
+    padding: 12px 25px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.save-button {
+    background: #4CAF50;
+    color: white;
+}
+
+.save-button:hover {
+    background: #45a049;
+}
+
+.reset-button {
+    background: #f44336;
+    color: white;
+}
+
+.reset-button:hover {
+    background: #da190b;
+}
+
+.status-message {
+    margin-top: 20px;
+    padding: 10px;
+    border-radius: 5px;
+    text-align: center;
+    display: none;
+}
+
+.status-message.success {
+    display: block;
+    background: rgba(76, 175, 80, 0.2);
+    color: #4CAF50;
+}
+
+.status-message.error {
+    display: block;
+    background: rgba(244, 67, 54, 0.2);
+    color: #f44336;
+}

@@ -11,10 +11,40 @@
                 "esp32",
                 "--debug",
                 "--port",
-                "3950"
+                "3950",
+                "--host",
+                "0.0.0.0"
             ],
             "jinja": true,
             "justMyCode": true
+        },
+        {
+            "name": "Remote Chrome Debug",
+            "type": "chrome",
+            "request": "launch",
+            "url": "http://raspberrypi:3950",
+            "webRoot": "${workspaceFolder}",
+            "sourceMapPathOverrides": {
+                "webpack:///static/*": "${workspaceFolder}/static/*",
+                "http://raspberrypi:3950/static/*": "${workspaceFolder}/static/*"
+            },
+            "sourceMaps": true,
+            "trace": true
+        },
+        {
+            "name": "Remote Firefox Debug",
+            "type": "firefox",
+            "request": "launch",
+            "url": "http://raspberrypi:3950",
+            "webRoot": "${workspaceFolder}",
+            "pathMappings": [
+                {
+                    "url": "http://raspberrypi:3950",
+                    "path": "${workspaceFolder}"
+                }
+            ],
+            "sourceMaps": true,
+            "reAttach": true
         },
         {
             "name": "Firefox Debug",
@@ -55,9 +85,39 @@
             ],
             "jinja": true,
             "justMyCode": true
+        },
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Launch Chrome against localhost",
+            "url": "http://localhost:5000",
+            "webRoot": "${workspaceFolder}",
+            "sourceMapPathOverrides": {
+                "webpack:///static/*": "${workspaceFolder}/static/*"
+            }
+        },
+        {
+            "type": "firefox",
+            "request": "launch",
+            "name": "Launch Firefox against localhost",
+            "url": "http://localhost:5000",
+            "webRoot": "${workspaceFolder}",
+            "pathMappings": [
+                {
+                    "url": "http://localhost:5000/static",
+                    "path": "${workspaceFolder}/static"
+                }
+            ]
         }
     ],
     "compounds": [
+        {
+            "name": "Debug Flask and JS Remote",
+            "configurations": [
+                "Flask Debug",
+                "Remote Chrome Debug"
+            ]
+        },
         {
             "name": "Debug Flask and JS with Firefox",
             "configurations": [

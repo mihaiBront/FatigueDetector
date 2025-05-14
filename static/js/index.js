@@ -21,6 +21,36 @@ async function resetDistance() {
     }
 }
 
+// Function to map fatigue level to status text
+function mapFatigueToStatus(isTired) {
+    if (isTired === null || isTired === undefined) return "Unknown";
+    if (isTired === 1) return "Lightly tired";
+    if (isTired === 2) return "Heavily tired";
+    return "Not Tired";
+}
+
+// Function to update face based on fatigue status and triggers
+function updateFaceState(data) {
+    const fatigueStatus = mapFatigueToStatus(data.fatigue_level);
+    const triggers = data.worried_triggers;
+
+    // Set worried state if any trigger is exceeded
+    if (triggers && (
+        triggers.speed_exceeded ||
+        triggers.distance_exceeded ||
+        triggers.time_exceeded ||
+        triggers.fatigue_exceeded
+    )) {
+        faceDisplay.setWorried(true);
+    } else {
+        faceDisplay.setNormal();
+    }
+}
+
+// Initialize UI components
+let faceDisplay;
+let dataPanel;
+
 // Function to fetch OBD data and update display
 async function updateOBDData() {
     try {
@@ -35,11 +65,12 @@ async function updateOBDData() {
         // Calculate display data
         const time = formatRuntime(data.runtime);
 
-        // Update face display
-        faceDisplay.updateData({
+        // Update data panel (face state is handled inside DataPanel)
+        dataPanel.updateData({
             time: time,
             speed: data.speed,
-            distance: data.accumulated_distance
+            distance: data.accumulated_distance,
+            fatigue: mapFatigueToStatus(data.fatigue_level)
         });
 
     } catch (error) {
@@ -49,6 +80,10 @@ async function updateOBDData() {
 
 // Wait for DOM to be fully loaded
 document.addEventListener('DOMContentLoaded', () => {
+    // Initialize components
+    faceDisplay = new FaceDisplay('face-container');
+    dataPanel = new DataPanel('data-container', faceDisplay);
+
     // Update data every second
     setInterval(updateOBDData, 1000);
 

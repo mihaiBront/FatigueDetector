@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fatigue Detection - Configuration</title>
+    <link rel="icon" type="image/x-icon" href="static/favicon.ico" />
+    <link rel="stylesheet" href="static/css/styles.css" />
+    <link rel="stylesheet" href="static/css/config.css" />
+</head>
+
+<body>
+    <div class="config-container">
+        <div class="config-header">
+            <h1>Fatigue Detection Configuration</h1>
+            <a href="/" class="back-button">Back to Dashboard</a>
+        </div>
+
+        <div class="config-form">
+            <div class="config-item">
+                <label for="speed">Speed Threshold (km/h)</label>
+                <div class="input-group">
+                    <button class="adjust-btn minus" data-input="speed" data-step="-5">-</button>
+                    <input type="number" id="speed" />
+                    <button class="adjust-btn plus" data-input="speed" data-step="5">+</button>
+                </div>
+                <span class="description">Maximum speed before triggering worried state</span>
+            </div>
+
+            <div class="config-item">
+                <label for="distance">Distance Threshold (km)</label>
+                <div class="input-group">
+                    <button class="adjust-btn minus" data-input="distance" data-step="-10">-</button>
+                    <input type="number" id="distance" />
+                    <button class="adjust-btn plus" data-input="distance" data-step="10">+</button>
+                </div>
+                <span class="description">Maximum distance before triggering worried state</span>
+            </div>
+
+            <div class="config-item">
+                <label for="time">Time Threshold (hours)</label>
+                <div class="input-group">
+                    <button class="adjust-btn minus" data-input="time" data-step="-0.5">-</button>
+                    <input type="number" id="time" />
+                    <button class="adjust-btn plus" data-input="time" data-step="0.5">+</button>
+                </div>
+                <span class="description">Maximum driving time before triggering worried state</span>
+            </div>
+
+            <div class="config-item">
+                <label for="fatigue">Fatigue Threshold</label>
+                <div class="input-group">
+                    <button class="adjust-btn minus" data-input="fatigue" data-step="-1">-</button>
+                    <select id="fatigue">
+                        <option value="0">Not Tired (0)</option>
+                        <option value="1">Lightly Tired (1)</option>
+                        <option value="2">Heavily Tired (2)</option>
+                    </select>
+                    <button class="adjust-btn plus" data-input="fatigue" data-step="1">+</button>
+                </div>
+                <span class="description">Fatigue level that triggers worried state</span>
+            </div>
+
+            <div class="config-actions">
+                <button id="save" class="save-button">Save Configuration</button>
+                <button id="reset" class="reset-button">Reset to Defaults</button>
+            </div>
+
+            <div id="status-message" class="status-message"></div>
+        </div>
+    </div>
+    <script src="static/js/config.js"></script>
+</body>
+
+</html>

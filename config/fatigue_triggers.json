@@ -1,0 +1,12 @@
+{
+    "speed_threshold": 140,
+    "distance_threshold": 250,
+    "time_threshold": 3600,
+    "fatigue_threshold": 2,
+    "description": {
+        "speed_threshold": "Maximum speed in km/h before triggering worried state",
+        "distance_threshold": "Maximum distance in km before triggering worried state",
+        "time_threshold": "Maximum time in seconds (7200 = 2 hours) before triggering worried state",
+        "fatigue_threshold": "Fatigue level (2 = heavily tired) that triggers worried state"
+    }
+}
