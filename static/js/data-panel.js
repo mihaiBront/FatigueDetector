@@ -26,9 +26,14 @@ class DataPanel {
             fatigue: 1
         };
 
+        // Fatigue state management (now managed by backend)
+        this.isPersistentFatigueActive = false;
+        this.restButton = null;
+
         // Then render and initialize elements
         this.render();
         this.initializeElements();
+        this.createRestButton();
 
         // Finally load config
         this.loadConfig();
@@ -110,6 +115,91 @@ class DataPanel {
         return hrs * 3600 + mins * 60 + secs;
     }
 
+    createRestButton() {
+        console.log('Creating rest button...');
+        this.restButton = document.createElement('button');
+        this.restButton.textContent = 'Stop to Rest';
+        this.restButton.className = 'rest-button';
+        this.restButton.style.cssText = `
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px 40px;
+            font-size: 24px;
+            font-weight: bold;
+            background-color: #ff4444;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            z-index: 2000;
+            display: none;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        `;
+        
+        this.restButton.addEventListener('click', () => {
+            console.log('Rest button clicked!');
+            this.clearPersistentFatigue();
+        });
+
+        document.body.appendChild(this.restButton);
+        console.log('Rest button created and added to DOM');
+    }
+
+    activatePersistentFatigue() {
+        if (this.isPersistentFatigueActive) {
+            console.log('Persistent fatigue already active, skipping...');
+            return;
+        }
+        
+        console.log('ACTIVATING PERSISTENT FATIGUE STATE!');
+        this.isPersistentFatigueActive = true;
+        this.faceDisplay.setTired(true);
+        
+        if (this.restButton) {
+            this.restButton.style.display = 'block';
+            console.log('Rest button shown');
+        } else {
+            console.error('Rest button not found!');
+        }
+        
+        // Force display "Cansado" status
+        this.fatigueValue.textContent = "Cansado";
+        console.log('Fatigue status set to Cansado');
+    }
+
+    async clearPersistentFatigue() {
+        console.log('Clearing persistent fatigue state');
+        
+        try {
+            // Call backend to reset fatigue state
+            const response = await fetch('/api/reset_fatigue', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            if (response.ok) {
+                const result = await response.json();
+                console.log('Backend fatigue state reset:', result);
+                
+                this.isPersistentFatigueActive = false;
+                this.restButton.style.display = 'none';
+                this.faceDisplay.setNormal();
+                
+                // Update fatigue display to current actual status
+                this.fatigueValue.textContent = "Not Tired";
+                console.log('Fatigue state reset successfully');
+            } else {
+                console.error('Failed to reset fatigue state on backend');
+            }
+        } catch (error) {
+            console.error('Error resetting fatigue state:', error);
+        }
+    }
+
     checkExceeded() {
         // Check speed - parse the speed value correctly by removing "km/h" and converting to number
         const currentSpeed = parseFloat(this.data.speed.toString().replace(' km/h', ''));
@@ -124,33 +214,52 @@ class DataPanel {
         const thresholdTimeSeconds = this.parseTime(this.thresholds.time);
         this.timeValue.classList.toggle('exceeded', currentTimeSeconds > thresholdTimeSeconds);
 
-        // Check fatigue
-        const fatigueLevel = this.getFatigueLevel(this.data.fatigue);
+        // Check fatigue - handle both string and numeric values
+        let fatigueLevel;
+        if (typeof this.data.fatigue === 'string') {
+            fatigueLevel = this.getFatigueLevel(this.data.fatigue);
+        } else {
+            fatigueLevel = this.data.fatigue;
+        }
+        
+        console.log('Current fatigue level:', fatigueLevel, 'Type:', typeof fatigueLevel, 'Raw data:', this.data.fatigue);
+        
         this.fatigueValue.classList.toggle('exceeded', fatigueLevel > this.thresholds.fatigue);
 
         // Calculate time percentage for tired state
         const timePercentage = (currentTimeSeconds / thresholdTimeSeconds) * 100;
-        console.log('Time percentage:', timePercentage);
 
-        // Check conditions for face state
-        const isExceeded = currentSpeed > this.thresholds.speed ||
-            currentDistance > this.thresholds.distance ||
-            currentTimeSeconds > thresholdTimeSeconds ||
-            fatigueLevel > this.thresholds.fatigue;
+        // Handle persistent fatigue state (managed by backend)
+        // Check if backend indicates persistent fatigue is active
+        if ((fatigueLevel === 2 || this.data.persistent_fatigue_active) && !this.isPersistentFatigueActive) {
+            console.log('Backend activated persistent fatigue! Showing button...', {
+                fatigueLevel: fatigueLevel,
+                persistent_fatigue_active: this.data.persistent_fatigue_active
+            });
+            this.activatePersistentFatigue();
+            return; // Don't process other states when persistent fatigue is active
+        }
 
-        const isTired = timePercentage >= 50 && timePercentage < 100;
-        console.log('Is tired:', isTired);
+        // Only process other states if persistent fatigue is not active
+        if (!this.isPersistentFatigueActive) {
+            const isExceeded = currentSpeed > this.thresholds.speed ||
+                currentDistance > this.thresholds.distance ||
+                currentTimeSeconds > thresholdTimeSeconds ||
+                fatigueLevel > this.thresholds.fatigue;
 
-        // Update face state based on conditions
-        if (isExceeded) {
-            console.log('Setting worried');
-            this.faceDisplay.setWorried(true);
-        } else if (isTired) {
-            console.log('Setting tired');
-            this.faceDisplay.setTired(true);
-        } else {
-            console.log('Setting normal');
-            this.faceDisplay.setNormal();
+            const isTired = timePercentage >= 50 && timePercentage < 100;
+
+            // Update face state based on conditions
+            if (isExceeded) {
+                console.log('Setting worried');
+                this.faceDisplay.setWorried(true);
+            } else if (isTired) {
+                console.log('Setting tired (time based)');
+                this.faceDisplay.setTired(true);
+            } else {
+                console.log('Setting normal');
+                this.faceDisplay.setNormal();
+            }
         }
     }
 
@@ -158,7 +267,7 @@ class DataPanel {
         const levels = {
             'Unknown': -1,
             'Not Tired': 0,
-            'Lightly Tired': 1,
+            'Tired': 1,
             'Heavily Tired': 2
         };
         return levels[status] || -1;
@@ -178,6 +287,13 @@ class DataPanel {
         if (newData.fatigue) {
             this.data.fatigue = newData.fatigue;
         }
+        // Store backend fatigue state
+        if (newData.persistent_fatigue_active !== undefined) {
+            this.data.persistent_fatigue_active = newData.persistent_fatigue_active;
+        }
+        if (newData.fatigue_counter !== undefined) {
+            this.data.fatigue_counter = newData.fatigue_counter;
+        }
 
         // Update display with units
         if (newData.speed !== undefined) {
@@ -189,8 +305,10 @@ class DataPanel {
         if (newData.time) {
             this.timeValue.textContent = newData.time;
         }
-        if (newData.fatigue) {
-            this.fatigueValue.textContent = newData.fatigue;
+        if (newData.fatigue && !this.isPersistentFatigueActive) {
+            // Only update fatigue display if not in persistent fatigue mode
+            const displayText = newData.fatigue === "Tired" ? "Cansado" : newData.fatigue;
+            this.fatigueValue.textContent = displayText;
         }
 
         // Check if any parameters exceed thresholds

@@ -3,6 +3,10 @@ import logging as log
 import time
 import json
 import os
+import requests
+import asyncio
+import websockets
+import base64
 log.basicConfig(level=log.INFO)
 
 from src.Bluetooth.BluetoothMockSimulator import BluetoothMockSimulator
@@ -15,6 +19,17 @@ obd_client = None
 # Global variables for distance tracking
 last_request_time = None
 total_distance = 0.0
+
+# Global variable for fatigue detection
+fatigue_level = None
+fatigue_data = None
+
+# Global variables for fatigue counter system
+fatigue_counter = 0
+persistent_fatigue_active = False
+fatigue_threshold = 3
+last_fatigue_detection_time = 0
+fatigue_grace_period = 5  # seconds to maintain counter after last detection
 
 # Configuration management
 CONFIG_PATH = 'config/fatigue_triggers.json'
@@ -194,7 +209,9 @@ async def obd_data():
     
     # Add accumulated distance and fatigue data to response
     ret_dict['accumulated_distance'] = round(total_distance, 1)
-    ret_dict['fatigue_level'] = None  # TODO: Implement camera client (0=Not tired, 1=Lightly tired, 2=Heavily tired)
+    ret_dict['fatigue_level'] = fatigue_level  # Use global fatigue level from camera detection
+    ret_dict['fatigue_counter'] = fatigue_counter  # Add fatigue counter
+    ret_dict['persistent_fatigue_active'] = persistent_fatigue_active  # Add persistent fatigue state
     
     # Add worried triggers status
     if current_config:
@@ -214,6 +231,106 @@ def reset_distance():
     last_request_time = None
     total_distance = 0.0
     return jsonify({'status': 'ok', 'distance': total_distance})
+
+@app.route('/api/reset_fatigue', methods=['POST'])
+def reset_fatigue():
+    """Reset the persistent fatigue state"""
+    global fatigue_counter, persistent_fatigue_active, fatigue_level
+    fatigue_counter = 0
+    persistent_fatigue_active = False
+    fatigue_level = 0
+    log.info("Fatigue state reset by user")
+    return jsonify({'status': 'ok', 'fatigue_counter': fatigue_counter, 'persistent_fatigue_active': persistent_fatigue_active})
+
+@app.route('/api/fatigue/data', methods=['POST'])
+def update_fatigue_data():
+    """Update fatigue data from frontend"""
+    global fatigue_level, fatigue_data, fatigue_counter, persistent_fatigue_active, fatigue_threshold, last_fatigue_detection_time, fatigue_grace_period
+    try:
+        import time
+        current_time = time.time()
+        
+        data = request.get_json()
+        if not data:
+            return jsonify({'error': 'No data provided'}), 400
+        
+        fatigue_data = data
+        # Determine fatigue level based on the data
+        current_fatigue_level = determine_fatigue_level(data)
+        
+        # Fatigue counter logic with grace period
+        if current_fatigue_level == 1:
+            fatigue_counter += 1
+            last_fatigue_detection_time = current_time
+            log.info(f"Fatigue detected! Counter: {fatigue_counter}/{fatigue_threshold}")
+            
+            # Check if we've reached the threshold
+            if fatigue_counter >= fatigue_threshold and not persistent_fatigue_active:
+                persistent_fatigue_active = True
+                log.info("PERSISTENT FATIGUE ACTIVATED - 3 detections reached!")
+        elif current_fatigue_level == 0:
+            # Only reset counter if grace period has passed and we haven't reached persistent state
+            if not persistent_fatigue_active and fatigue_counter > 0:
+                if last_fatigue_detection_time == 0 or (current_time - last_fatigue_detection_time) > fatigue_grace_period:
+                    log.info(f"Fatigue counter reset from {fatigue_counter} to 0 (grace period expired)")
+                    fatigue_counter = 0
+                else:
+                    log.debug(f"Fatigue counter maintained at {fatigue_counter} (within grace period)")
+        
+        # Set fatigue level - if persistent fatigue is active, always return 2 (heavily tired)
+        if persistent_fatigue_active:
+            fatigue_level = 2  # Force heavily tired state
+        else:
+            fatigue_level = current_fatigue_level
+        
+        return jsonify({
+            'status': 'ok', 
+            'fatigue_level': fatigue_level,
+            'fatigue_counter': fatigue_counter,
+            'persistent_fatigue_active': persistent_fatigue_active
+        })
+    except Exception as e:
+        log.error(f"Error updating fatigue data: {e}")
+        return jsonify({'error': str(e)}), 500
+
+def determine_fatigue_level(fatigue_data):
+    """Determine fatigue level (0=Not tired, 1=Lightly tired, 2=Heavily tired) based on fatigue data"""
+    if not fatigue_data:
+        return None
+    
+    # Parse the JSON report if it's a string
+    if isinstance(fatigue_data.get('json_report'), str):
+        try:
+            report = json.loads(fatigue_data['json_report'])
+        except:
+            report = {}
+    else:
+        report = fatigue_data.get('json_report', {})
+    
+    # Count positive reports
+    positive_reports = 0
+    
+    # Check various fatigue indicators
+    if report.get('yawn', {}).get('report', False):
+        positive_reports += 1
+    if report.get('eye_rub_first_hand', {}).get('report', False):
+        positive_reports += 1
+    if report.get('eye_rub_second_hand', {}).get('report', False):
+        positive_reports += 1
+    if report.get('flicker', {}).get('report', False):
+        positive_reports += 1
+    if report.get('micro_sleep', {}).get('report', False):
+        positive_reports += 1
+    if report.get('pitch', {}).get('report', False):
+        positive_reports += 1
+    
+    # Determine level based on number of positive reports
+    if positive_reports == 0:
+        return 0  # Not tired
+    elif positive_reports <= 2:
+        return 1  # Lightly tired
+    else:
+        return 2  # Heavily tired
 
 async def main():
     global obd_client, last_request_time, total_distance
@@ -239,6 +356,8 @@ async def main():
         if not await obd_client.init_communication():
             log.error("Failed to initialize communication")
             exit(1)
+    
+    
             
     # Reset distance tracking
     last_request_time = None
@@ -249,5 +368,4 @@ async def main():
     app.run(host=args.host, port=args.port, debug=args.debug, use_reloader=args.debug)
 
 if __name__ == '__main__':
-    import asyncio
     asyncio.run(main())

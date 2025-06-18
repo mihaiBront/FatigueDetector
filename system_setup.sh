@@ -3,17 +3,44 @@
 # Exit on error
 set -e
 
+# Add local bin to PATH
+export PATH="$HOME/.local/bin:$PATH"
+
+# Get the directory where the script is located
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+cd "$SCRIPT_DIR"
+
+# Verify requirements.txt exists
+if [ ! -f "requirements.txt" ]; then
+    echo "Error: requirements.txt not found in $SCRIPT_DIR"
+    exit 1
+fi
+
 echo "Updating package lists..."
 sudo apt update
+sudo apt upgrade -y
+
+echo "Installing build dependencies..."
+sudo apt install -y build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev wget libsqlite3-dev libbz2-dev
+
+echo "Downloading and installing Python 3.9..."
+cd /tmp
+wget https://www.python.org/ftp/python/3.9.18/Python-3.9.18.tgz
+tar -xf Python-3.9.18.tgz
+cd Python-3.9.18
+./configure --enable-optimizations
+make -j $(nproc)
+sudo make altinstall
+
+echo "Installing pip for Python 3.9..."
+curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+python3.9 get-pip.py
+
+# Return to the project directory
+cd "$SCRIPT_DIR"
 
 echo "Installing system dependencies..."
-echo "Installing python 3.9"
-sudo apt install -y python3.9
-sudo apt install -y python3.9-venv python3.9-dev python3.9-distutils
-while read -r package; do
-    echo "Installing $package..."
-    sudo apt install -y "$package"
-done < system_requirements.txt
+sudo apt install -y bluetooth libbluetooth-dev pkg-config libboost-python-dev libboost-thread-dev build-essential
 
 echo "Setting up Python virtual environment..."
 # Remove existing virtual environment if it's incomplete
