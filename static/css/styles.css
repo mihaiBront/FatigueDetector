@@ -1,6 +1,21 @@
+/* COLOR INVERSION FIX FOR TFT DISPLAY */
+/* This fixes RGB color inversion where orange and blue tones are swapped */
+html {
+  /* Primary fix for RGB inversion */
+  filter: invert(1);
+  /* Alternative: more subtle color correction */
+  /* filter: hue-rotate(180deg) saturate(1.1) brightness(1.05); */
+}
+
+/* Ensure proper viewport handling */
 body {
   background-color: black;
   transition: background-color 0.3s;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 /* Add worried background flash animation */

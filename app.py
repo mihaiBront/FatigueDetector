@@ -235,12 +235,42 @@ def reset_distance():
 @app.route('/api/reset_fatigue', methods=['POST'])
 def reset_fatigue():
     """Reset the persistent fatigue state"""
-    global fatigue_counter, persistent_fatigue_active, fatigue_level
-    fatigue_counter = 0
-    persistent_fatigue_active = False
-    fatigue_level = 0
-    log.info("Fatigue state reset by user")
-    return jsonify({'status': 'ok', 'fatigue_counter': fatigue_counter, 'persistent_fatigue_active': persistent_fatigue_active})
+    global fatigue_counter, persistent_fatigue_active, fatigue_level, last_request_time, total_distance
+    
+    # Check if more than 2 hours have passed (7200 seconds)
+    if obd_client:
+        data = asyncio.run(obd_client.request_all_settings())
+        current_runtime = data.runtime
+        two_hours_in_seconds = 2 * 60 * 60  # 2 hours in seconds
+        
+        if current_runtime >= two_hours_in_seconds:
+            log.info("More than 2 hours of travel detected, resetting all counters")
+            # Reset all counters when over 2 hours
+            fatigue_counter = 0
+            persistent_fatigue_active = False
+            fatigue_level = 0
+            last_request_time = None
+            total_distance = 0.0
+            log.info("All counters reset due to 2+ hours of travel")
+        else:
+            # Only reset fatigue state if under 2 hours
+            fatigue_counter = 0
+            persistent_fatigue_active = False
+            fatigue_level = 0
+            log.info("Fatigue state reset by user (under 2 hours)")
+    else:
+        # Fallback if OBD client not available
+        fatigue_counter = 0
+        persistent_fatigue_active = False
+        fatigue_level = 0
+        log.info("Fatigue state reset by user")
+    
+    return jsonify({
+        'status': 'ok', 
+        'fatigue_counter': fatigue_counter, 
+        'persistent_fatigue_active': persistent_fatigue_active,
+        'distance_reset': total_distance == 0.0
+    })
 
 @app.route('/api/fatigue/data', methods=['POST'])
 def update_fatigue_data():

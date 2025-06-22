@@ -147,7 +147,17 @@ class DataPanel {
         console.log('Rest button created and added to DOM');
     }
 
-    activatePersistentFatigue() {
+    updateRestButtonText(isTimeBased = false) {
+        if (this.restButton) {
+            if (isTimeBased) {
+                this.restButton.textContent = 'Reset Journey (2+ Hours)';
+            } else {
+                this.restButton.textContent = 'Stop to Rest';
+            }
+        }
+    }
+
+    activatePersistentFatigue(isTimeBased = false) {
         if (this.isPersistentFatigueActive) {
             console.log('Persistent fatigue already active, skipping...');
             return;
@@ -159,18 +169,32 @@ class DataPanel {
         
         if (this.restButton) {
             this.restButton.style.display = 'block';
+            this.updateRestButtonText(isTimeBased);
             console.log('Rest button shown');
         } else {
             console.error('Rest button not found!');
         }
         
-        // Force display "Cansado" status
-        this.fatigueValue.textContent = "Cansado";
-        console.log('Fatigue status set to Cansado');
+        // Display appropriate status based on cause
+        if (isTimeBased) {
+            this.fatigueValue.textContent = "Tiempo Excedido";
+            console.log('Fatigue status set to Tiempo Excedido (time-based)');
+        } else {
+            this.fatigueValue.textContent = "Muy Cansado";
+            console.log('Fatigue status set to Muy Cansado (fatigue-based)');
+        }
     }
 
     async clearPersistentFatigue() {
         console.log('Clearing persistent fatigue state');
+        
+        // Check if more than 2 hours have passed
+        const currentTimeSeconds = this.parseTime(this.data.time);
+        const twoHoursInSeconds = 2 * 60 * 60; // 2 hours in seconds
+        
+        if (currentTimeSeconds >= twoHoursInSeconds) {
+            console.log('More than 2 hours of travel detected, auto-resetting fatigue state');
+        }
         
         try {
             // Call backend to reset fatigue state
@@ -192,6 +216,13 @@ class DataPanel {
                 // Update fatigue display to current actual status
                 this.fatigueValue.textContent = "Not Tired";
                 console.log('Fatigue state reset successfully');
+                
+                // If distance was also reset, update the display
+                if (result.distance_reset) {
+                    console.log('Distance was also reset due to 2+ hours of travel');
+                    this.data.distance = "0.0";
+                    this.distanceValue.textContent = "0.0 km";
+                }
             } else {
                 console.error('Failed to reset fatigue state on backend');
             }
@@ -229,19 +260,25 @@ class DataPanel {
         // Calculate time percentage for tired state
         const timePercentage = (currentTimeSeconds / thresholdTimeSeconds) * 100;
 
-        // Handle persistent fatigue state (managed by backend)
-        // Check if backend indicates persistent fatigue is active
-        if ((fatigueLevel === 2 || this.data.persistent_fatigue_active) && !this.isPersistentFatigueActive) {
-            console.log('Backend activated persistent fatigue! Showing button...', {
+        // Check if more than 2 hours have passed (7200 seconds)
+        const twoHoursInSeconds = 2 * 60 * 60;
+        const isOverTwoHours = currentTimeSeconds >= twoHoursInSeconds;
+
+        // Handle persistent fatigue state (managed by backend) or 2+ hours of travel
+        // Check if backend indicates persistent fatigue is active OR if more than 2 hours have passed
+        if (((fatigueLevel === 2 || this.data.persistent_fatigue_active) || isOverTwoHours) && !this.isPersistentFatigueActive) {
+            console.log('Activating button due to:', {
                 fatigueLevel: fatigueLevel,
-                persistent_fatigue_active: this.data.persistent_fatigue_active
+                persistent_fatigue_active: this.data.persistent_fatigue_active,
+                isOverTwoHours: isOverTwoHours,
+                currentTimeSeconds: currentTimeSeconds
             });
-            this.activatePersistentFatigue();
+            this.activatePersistentFatigue(isOverTwoHours && !(fatigueLevel === 2 || this.data.persistent_fatigue_active));
             return; // Don't process other states when persistent fatigue is active
         }
 
-        // Only process other states if persistent fatigue is not active
-        if (!this.isPersistentFatigueActive) {
+        // Only process other states if persistent fatigue is not active and not over 2 hours
+        if (!this.isPersistentFatigueActive && !isOverTwoHours) {
             const isExceeded = currentSpeed > this.thresholds.speed ||
                 currentDistance > this.thresholds.distance ||
                 currentTimeSeconds > thresholdTimeSeconds ||

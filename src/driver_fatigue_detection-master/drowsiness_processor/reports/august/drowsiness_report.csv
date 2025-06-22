@@ -210,3 +210,35 @@ timestamp,eye_rub_first_hand_report,eye_rub_first_hand_count,eye_rub_first_hand_
 2025-06-18 19:44:05,False,0,[],|,False,0,[],|,False,Counting flickers... 5.0 seconds remaining.,|,False,0,[],|,False,Counting pitches...,[],|,True,2,"['1 yawn: 0.0 seconds', '2 yawn: 0.0 seconds']"
 2025-06-18 19:44:10,False,0,[],|,False,0,[],|,True,0,|,False,0,[],|,False,Counting pitches...,[],|,False,2,"['1 yawn: 0.0 seconds', '2 yawn: 0.0 seconds']"
 2025-06-18 19:44:11,False,0,[],|,False,0,[],|,False,Counting flickers... 59.0 seconds remaining.,|,False,0,[],|,False,Counting pitches...,[],|,True,3,"['1 yawn: 0.0 seconds', '2 yawn: 0.0 seconds', '3 yawn: 0.0 seconds']"
+2025-06-18 19:51:26,True,0,[],|,True,0,[],|,True,0,|,False,0,[],|,False,Counting pitches...,[],|,True,3,"['1 yawn: 0.0 seconds', '2 yawn: 0.0 seconds', '3 yawn: 0.0 seconds']"
+2025-06-18 21:47:27,True,0,[],|,True,0,[],|,True,0,|,False,0,[],|,True,1,['1 pitch: 6961.0 seconds'],|,True,0,"['1 yawn: 0.0 seconds', '2 yawn: 0.0 seconds', '3 yawn: 0.0 seconds']"
+2025-06-20 16:21:51,False,0,[],|,False,0,[],|,True,0,|,False,0,[],|,False,Counting pitches...,[],|,False,0,[]
+2025-06-20 16:22:07,False,0,[],|,False,0,[],|,False,Counting flickers... 44.0 seconds remaining.,|,False,0,[],|,False,Counting pitches...,[],|,True,1,['1 yawn: 0.0 seconds']
+2025-06-20 16:22:14,False,0,[],|,False,0,[],|,False,Counting flickers... 37.0 seconds remaining.,|,False,0,[],|,False,Counting pitches...,[],|,True,2,"['1 yawn: 0.0 seconds', '2 yawn: 0.0 seconds']"
+2025-06-20 16:22:18,False,0,[],|,False,0,[],|,False,Counting flickers... 33.0 seconds remaining.,|,False,0,[],|,False,Counting pitches...,[],|,True,3,"['1 yawn: 0.0 seconds', '2 yawn: 0.0 seconds', '3 yawn: 0.0 seconds']"
+2025-06-20 16:22:52,False,0,[],|,False,0,[],|,True,0,|,False,0,[],|,False,Counting pitches...,[],|,False,3,"['1 yawn: 0.0 seconds', '2 yawn: 0.0 seconds', '3 yawn: 0.0 seconds']"
+2025-06-20 16:23:29,False,0,[],|,False,0,[],|,False,Counting flickers... 24.0 seconds remaining.,|,False,0,[],|,False,Counting pitches...,[],|,True,3,"['1 yawn: 0.0 seconds', '2 yawn: 0.0 seconds', '3 yawn: 0.0 seconds']"
+2025-06-20 16:23:55,False,0,[],|,False,0,[],|,True,0,|,False,0,[],|,False,Counting pitches...,[],|,False,0,"['1 yawn: 0.0 seconds', '2 yawn: 0.0 seconds', '3 yawn: 0.0 seconds']"
+2025-06-20 16:25:16,False,0,[],|,False,0,[],|,True,0,|,False,0,[],|,False,Counting pitches...,[],|,False,0,"['1 yawn: 0.0 seconds', '2 yawn: 0.0 seconds', '3 yawn: 0.0 seconds']"
+2025-06-20 16:26:04,True,0,[],|,True,0,[],|,False,Counting flickers... 12.0 seconds remaining.,|,False,0,[],|,False,Counting pitches...,[],|,False,0,"['1 yawn: 0.0 seconds', '2 yawn: 0.0 seconds', '3 yawn: 0.0 seconds']"
+2025-06-20 17:04:52,True,0,[],|,True,0,[],|,True,1,|,False,0,[],|,False,Counting pitches...,[],|,True,0,"['1 yawn: 0.0 seconds', '2 yawn: 0.0 seconds', '3 yawn: 0.0 seconds']"
+2025-06-20 17:05:17,False,0,[],|,False,0,[],|,False,0,|,True,1,['1 micro sleep: 2347.0 seconds'],|,True,1,['1 pitch: 25.0 seconds'],|,False,0,"['1 yawn: 0.0 seconds', '2 yawn: 0.0 seconds', '3 yawn: 0.0 seconds']"
+2025-06-20 17:08:28,False,0,[],|,False,0,[],|,True,0,|,False,0,[],|,False,Counting pitches...,[],|,True,0,"['1 yawn: 0.0 seconds', '2 yawn: 0.0 seconds', '3 yawn: 0.0 seconds']"
+2025-06-22 18:57:22,False,0,[],|,False,0,[],|,True,0,|,False,0,[],|,False,Counting pitches...,[],|,False,0,[]
+2025-06-22 18:57:35,False,0,[],|,False,0,[],|,False,Counting flickers... 47.0 seconds remaining.,|,False,0,[],|,True,1,['1 pitch: 15.0 seconds'],|,False,0,[]
+2025-06-22 18:58:48,False,0,[],|,False,0,[],|,True,0,|,False,0,[],|,False,Counting pitches...,[],|,False,0,[]
+2025-06-22 19:03:40,False,0,[],|,False,0,[],|,True,0,|,False,0,[],|,False,Counting pitches...,[],|,False,0,[]
+2025-06-22 19:03:59,False,0,[],|,False,0,[],|,False,Counting flickers... 41.0 seconds remaining.,|,False,0,[],|,True,1,['1 pitch: 19.0 seconds'],|,False,0,[]
+2025-06-22 19:04:10,False,0,[],|,False,0,[],|,False,Counting flickers... 30.0 seconds remaining.,|,False,0,[],|,False,Counting pitches...,[],|,True,1,['1 yawn: 0.0 seconds']
+2025-06-22 19:04:14,False,0,[],|,False,0,[],|,False,Counting flickers... 26.0 seconds remaining.,|,False,0,[],|,False,Counting pitches...,[],|,True,2,"['1 yawn: 0.0 seconds', '2 yawn: 0.0 seconds']"
+2025-06-22 19:04:18,False,0,[],|,False,0,[],|,False,Counting flickers... 22.0 seconds remaining.,|,False,0,[],|,False,Counting pitches...,[],|,True,3,"['1 yawn: 0.0 seconds', '2 yawn: 0.0 seconds', '3 yawn: 0.0 seconds']"
+2025-06-22 19:05:23,False,0,[],|,False,0,[],|,True,0,|,False,0,[],|,False,Counting pitches...,[],|,False,3,"['1 yawn: 0.0 seconds', '2 yawn: 0.0 seconds', '3 yawn: 0.0 seconds']"
+2025-06-22 19:05:39,False,0,[],|,False,0,[],|,False,Counting flickers... 44.0 seconds remaining.,|,False,0,[],|,False,Counting pitches...,[],|,True,3,"['1 yawn: 0.0 seconds', '2 yawn: 0.0 seconds', '3 yawn: 0.0 seconds']"
+2025-06-22 19:09:19,True,0,[],|,True,0,[],|,True,0,|,False,0,[],|,True,2,"['1 pitch: 19.0 seconds', '2 pitch: 217.0 seconds']",|,True,0,"['1 yawn: 0.0 seconds', '2 yawn: 0.0 seconds', '3 yawn: 0.0 seconds']"
+2025-06-22 19:20:26,False,0,[],|,False,0,[],|,True,0,|,False,0,[],|,False,Counting pitches...,[],|,False,0,[]
+2025-06-22 19:20:30,False,0,[],|,False,0,[],|,False,Counting flickers... 56.0 seconds remaining.,|,False,0,[],|,True,1,['1 pitch: 3.0 seconds'],|,False,0,[]
+2025-06-22 19:20:33,False,0,[],|,False,0,[],|,False,Counting flickers... 52.0 seconds remaining.,|,False,0,[],|,False,Counting pitches...,[],|,True,1,['1 yawn: 0.0 seconds']
+2025-06-22 19:20:39,False,0,[],|,False,0,[],|,False,Counting flickers... 47.0 seconds remaining.,|,False,0,[],|,False,Counting pitches...,[],|,True,2,"['1 yawn: 0.0 seconds', '2 yawn: 0.0 seconds']"
+2025-06-22 19:20:43,False,0,[],|,False,0,[],|,False,Counting flickers... 43.0 seconds remaining.,|,False,0,[],|,False,Counting pitches...,[],|,True,3,"['1 yawn: 0.0 seconds', '2 yawn: 0.0 seconds', '3 yawn: 0.0 seconds']"
+2025-06-22 19:20:47,False,0,[],|,False,0,[],|,False,Counting flickers... 39.0 seconds remaining.,|,False,0,[],|,False,Counting pitches...,[],|,True,4,"['1 yawn: 0.0 seconds', '2 yawn: 0.0 seconds', '3 yawn: 0.0 seconds', '4 yawn: 0.0 seconds']"
+2025-06-22 19:21:05,False,0,[],|,False,0,[],|,False,Counting flickers... 20.0 seconds remaining.,|,False,0,[],|,True,2,"['1 pitch: 3.0 seconds', '2 pitch: 12.0 seconds']",|,False,4,"['1 yawn: 0.0 seconds', '2 yawn: 0.0 seconds', '3 yawn: 0.0 seconds', '4 yawn: 0.0 seconds']"
