@@ -77,19 +77,19 @@ Para verificar el estado de las cámaras sin iniciar el sistema.
 
 ### Mensajes de Error Comunes
 
-- `❌ No se encontró ninguna cámara disponible`: La cámara no está conectada o no tiene permisos
-- `❌ /dev/videoX no puede leer frames`: La cámara está ocupada por otra aplicación
-- `❌ v4l2-ctl no está instalado`: Instalar con `sudo apt install v4l-utils`
+- `No se encontró ninguna cámara disponible`: La cámara no está conectada o no tiene permisos
+- `/dev/videoX no puede leer frames`: La cámara está ocupada por otra aplicación
+- `v4l2-ctl no está instalado`: Instalar con `sudo apt install v4l-utils`
 
 ## 📋 Logs del Sistema
 
 El sistema ahora muestra mensajes informativos:
 
 ```
-🔍 Detectando cámara disponible...
+Detectando cámara disponible...
   Probando /dev/video0...
-✅ Cámara encontrada en /dev/video0
-📷 Usando cámara en /dev/video0
+Cámara encontrada en /dev/video0
+Usando cámara en /dev/video0
 ```
 
 ## 🔧 Configuración Avanzada
