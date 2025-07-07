@@ -122,12 +122,12 @@ if __name__ == "__main__":
         print(f"Sending detection {i+1}/3...")
         level = send_fatigue_level_1()
         if level != 1:
-            print("❌ FAILED! Detection not working properly")
+            print("FAILED! Detection not working properly")
             exit(1)
         time.sleep(2)  # Wait 2 seconds between detections
     
     print()
-    print("✅ SUCCESS! Sent 3 consecutive fatigue level 1 detections")
+    print("SUCCESS! Sent 3 consecutive fatigue level 1 detections")
     print("Check the web interface - you should see:")
     print("   - Red background")
     print("   - 'Stop to Rest' button in center")
@@ -160,4 +160,4 @@ if __name__ == "__main__":
         time.sleep(1)
     
     print()
-    print("✅ Test completed! The button should appear after the 3rd consecutive detection.") 
+    print("Test completed! The button should appear after the 3rd consecutive detection.") 
