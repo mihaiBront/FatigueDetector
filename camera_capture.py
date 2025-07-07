@@ -28,12 +28,12 @@ def find_available_camera():
             ret, frame = cap.read()
             cap.release()
             if ret and frame is not None:
-                print(f"✅ Cámara encontrada en /dev/video{device_index}")
+                print(f"Cámara encontrada en /dev/video{device_index}")
                 return device_index
             else:
-                print(f"  ❌ /dev/video{device_index} no puede leer frames")
+                print(f"   /dev/video{device_index} no puede leer frames")
         else:
-            print(f"  ❌ /dev/video{device_index} no está disponible")
+            print(f"   /dev/video{device_index} no está disponible")
     
     # Si no encuentra nada en los dispositivos comunes, busca todos los dispositivos video
     print("  Buscando otros dispositivos de video...")
@@ -47,12 +47,12 @@ def find_available_camera():
                 ret, frame = cap.read()
                 cap.release()
                 if ret and frame is not None:
-                    print(f"✅ Cámara encontrada en {device_path}")
+                    print(f"Cámara encontrada en {device_path}")
                     return device_index
         except (ValueError, IndexError):
             continue
     
-    print("❌ No se encontró ninguna cámara disponible")
+    print("No se encontró ninguna cámara disponible")
     return None
 
 class CameraFatigueDetector:
@@ -68,7 +68,7 @@ class CameraFatigueDetector:
         self.websocket_url = websocket_url
         self.websocket = None
         self.is_running = False
-        print(f"📷 Usando cámara en /dev/video{self.camera_device}")
+        print(f"Usando cámara en /dev/video{self.camera_device}")
 
     async def connect_websocket(self):
         try:
@@ -83,7 +83,7 @@ class CameraFatigueDetector:
         try:
             cap = cv2.VideoCapture(self.camera_device)
             if not cap.isOpened():
-                print(f"❌ Error: No se pudo abrir la cámara en /dev/video{self.camera_device}")
+                print(f"Error: No se pudo abrir la cámara en /dev/video{self.camera_device}")
                 return None
             
             # Configurar propiedades de la cámara
@@ -99,18 +99,18 @@ class CameraFatigueDetector:
             cap.release()
             
             if not ret or frame is None:
-                print(f"❌ Error: No se pudo capturar frame de /dev/video{self.camera_device}")
+                print(f"Error: No se pudo capturar frame de /dev/video{self.camera_device}")
                 return None
             
             # Verificar que el frame tiene contenido válido
             if frame.size == 0:
-                print(f"❌ Error: Frame vacío de /dev/video{self.camera_device}")
+                print(f"Error: Frame vacío de /dev/video{self.camera_device}")
                 return None
             
             return frame
             
         except Exception as e:
-            print(f"❌ Error capturando frame: {e}")
+            print(f"Error capturando frame: {e}")
             return None
 
     def frame_to_base64(self, frame):
@@ -219,7 +219,7 @@ async def main():
         print("Detención solicitada")
     except RuntimeError as e:
         print(f"Error: {e}")
-        print("💡 Sugerencias:")
+        print("Sugerencias:")
         print("  - Verifica que la cámara esté conectada")
         print("  - Ejecuta 'ls /dev/video*' para ver dispositivos disponibles")
         print("  - Asegúrate de que la cámara no esté siendo usada por otra aplicación")
