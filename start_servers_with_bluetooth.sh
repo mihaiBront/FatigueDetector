@@ -27,11 +27,11 @@ if [ -f "check_cameras.py" ]; then
         exit 0
     fi
 else
-    echo "⚠️  Script de diagnóstico de cámaras no encontrado"
+    echo "Script de diagnóstico de cámaras no encontrado"
 fi
 
 echo ""
-echo "🚀 Starting Fatigue Detection System with Real Bluetooth Data..."
+echo "Starting Fatigue Detection System with Real Bluetooth Data..."
 
 # Start FastAPI server (fatigue detection) in background
 echo "Starting FastAPI server (fatigue detection) on port 8000..."
@@ -55,7 +55,7 @@ python camera_capture.py &
 CAMERA_PID=$!
 
 echo ""
-echo "✅ All services started!"
+echo "All services started!"
 echo "FastAPI (fatigue detection): http://localhost:8000"
 echo "Flask (main app): http://localhost:5000"
 echo "Camera capture: Running in background with auto-detection"
