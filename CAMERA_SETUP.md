@@ -1,10 +1,9 @@
 # Configuración de Cámara - Sistema de Detección de Fatiga
 
-## 🎯 Problema Resuelto
+## Problema Resuelto
 
 El sistema ahora detecta automáticamente la cámara disponible, eliminando la necesidad de configurar manualmente el dispositivo `/dev/video*` después de cada reinicio.
 
-## 🔧 Cambios Implementados
 
 ### 1. Detección Automática de Cámara
 - **Archivo modificado**: `camera_capture.py`
@@ -44,7 +43,7 @@ python check_cameras.py
 ```
 Para verificar el estado de las cámaras sin iniciar el sistema.
 
-## 🔍 Diagnóstico de Problemas
+##  Diagnóstico de Problemas
 
 ### Si la cámara no se detecta:
 
@@ -81,45 +80,12 @@ Para verificar el estado de las cámaras sin iniciar el sistema.
 - `/dev/videoX no puede leer frames`: La cámara está ocupada por otra aplicación
 - `v4l2-ctl no está instalado`: Instalar con `sudo apt install v4l-utils`
 
-## 📋 Logs del Sistema
-
-El sistema ahora muestra mensajes informativos:
-
-```
-Detectando cámara disponible...
-  Probando /dev/video0...
-Cámara encontrada en /dev/video0
-Usando cámara en /dev/video0
-```
-
-## 🔧 Configuración Avanzada
-
-### Usar un dispositivo específico
-Si necesitas usar un dispositivo específico, modifica la línea en `camera_capture.py`:
-
-```python
-detector = CameraFatigueDetector(camera_device=0)  # Usar /dev/video0
-```
 
 ### Agregar más dispositivos a la búsqueda
 Modifica la lista `common_devices` en la función `find_available_camera()`:
 
 ```python
-common_devices = [0, 1, 2, 3, 4, 5]  # Agregar más dispositivos
+common_devices = [0, 1, 2, 3, 4, 5] 
 ```
 
-## 🎯 Compatibilidad
 
-- ✅ Cámaras USB (Logitech, etc.)
-- ✅ Cámaras integradas de Raspberry Pi
-- ✅ Múltiples cámaras conectadas
-- ✅ Detección automática después de reinicio
-
-## 📞 Soporte
-
-Si tienes problemas:
-
-1. Ejecuta `python check_cameras.py` para diagnóstico
-2. Verifica que la cámara esté conectada y funcione
-3. Asegúrate de que no esté siendo usada por otra aplicación
-4. Verifica los permisos del usuario 
