@@ -195,7 +195,7 @@ class Drowsiness:
                                 threading.Timer(5.0, restore_normal).start()
                                 
                     except json.JSONDecodeError as e:
-                        print(f"❌ Error parseando json_report: {e}")
+                        print(f"Error parseando json_report: {e}")
 
                     # image original
                     original_base64 = response_data.get("original_image")
@@ -219,7 +219,7 @@ class Drowsiness:
                 await asyncio.sleep(0.1)
 
     def restore_background(self):
-        print("✅ Restaurando fondo original")
+        print("Restaurando fondo original")
         self.page.bgcolor = "#807da6"
         self.page.update()
 
