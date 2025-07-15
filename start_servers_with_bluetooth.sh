@@ -13,11 +13,11 @@ cleanup() {
 # Set trap to cleanup on script exit
 trap cleanup SIGINT SIGTERM
 
-echo "🔍 Verificando estado del sistema antes de iniciar..."
+echo "Verificando estado del sistema antes de iniciar..."
 
 # Check if camera diagnostic script exists
 if [ -f "check_cameras.py" ]; then
-    echo "📷 Ejecutando diagnóstico de cámaras..."
+    echo "Ejecutando diagnóstico de cámaras..."
     python check_cameras.py
     echo ""
     echo "¿Continuar con el inicio del sistema? (y/n)"
