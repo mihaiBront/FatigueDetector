@@ -15,7 +15,7 @@ def find_available_camera():
     Detecta automáticamente qué dispositivo de cámara está disponible.
     Retorna el índice del primer dispositivo de cámara que funcione.
     """
-    print("🔍 Detectando cámara disponible...")
+    print("Detectando cámara disponible...")
     
     # Primero intenta con los dispositivos más comunes
     common_devices = [0, 1, 2, 3]
