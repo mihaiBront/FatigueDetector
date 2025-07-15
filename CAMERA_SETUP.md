@@ -20,7 +20,7 @@ El sistema ahora detecta automáticamente la cámara disponible, eliminando la n
 - **Función**: Ejecuta diagnóstico antes de iniciar el sistema
 - **Uso**: `./start_servers_with_camera_check.sh`
 
-## 🚀 Cómo Usar
+##  Cómo Usar
 
 ### Opción 1: Inicio Normal (Recomendado)
 ```bash
