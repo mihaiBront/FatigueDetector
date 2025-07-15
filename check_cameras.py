@@ -11,7 +11,7 @@ import subprocess
 
 def check_video_devices():
     """Verifica qué dispositivos de video están disponibles en el sistema"""
-    print("🔍 Verificando dispositivos de video disponibles...")
+    print("Verificando dispositivos de video disponibles...")
     print()
     
     # Listar todos los dispositivos /dev/video*
@@ -20,7 +20,7 @@ def check_video_devices():
         print("No se encontraron dispositivos /dev/video*")
         return
     
-    print(f"📹 Dispositivos encontrados: {len(video_devices)}")
+    print(f"Dispositivos encontrados: {len(video_devices)}")
     for device in sorted(video_devices):
         print(f"  - {device}")
     print()
